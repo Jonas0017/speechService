@@ -1,0 +1,32 @@
+# requirements.prod.txt - Dependências para Produção
+
+# Core Whisper
+openai-whisper==20231117
+
+# Servidor Web
+Flask==3.0.0
+gunicorn==21.2.0
+
+# Processamento de Áudio (sem FFmpeg)
+numpy==1.24.3
+soundfile==0.12.1
+
+# HTTP/CORS
+flask-cors==4.0.0
+
+# Monitoramento e Logs
+psutil==5.9.6
+
+# Cache e Rate Limiting (opcionais)
+redis==5.0.1
+
+# Produção
+Werkzeug==3.0.1
+
+# Utilitários
+requests==2.31.0
+python-dotenv==1.0.0
+
+# Compatibilidade
+setuptools==68.2.2
+wheel==0.41.2 

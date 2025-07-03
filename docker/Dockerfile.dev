@@ -1,0 +1,64 @@
+# docker/Dockerfile.dev
+FROM python:3.11-slim
+
+# Labels para metadata
+LABEL maintainer="dev@whisper-server.com" \
+      description="Servidor Whisper - Versão Desenvolvimento" \
+      version="dev"
+
+# Instalar dependências do sistema + ferramentas de desenvolvimento
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libc6-dev \
+    libasound2-dev \
+    libsndfile1-dev \
+    portaudio19-dev \
+    curl \
+    git \
+    vim \
+    htop \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Criar usuário não-root para desenvolvimento
+RUN useradd --create-home --shell /bin/bash --uid 1000 whisper
+
+# Configurar diretório de trabalho
+WORKDIR /app
+
+# Copiar requirements primeiro (cache layer)
+COPY requirements.txt .
+
+# Instalar dependências Python + ferramentas de desenvolvimento
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir flask-debugtoolbar watchdog
+
+# Criar diretórios necessários
+RUN mkdir -p logs data tests src config scripts && \
+    chown -R whisper:whisper /app
+
+# Mudar para usuário não-root
+USER whisper
+
+# Variáveis de ambiente para desenvolvimento
+ENV FLASK_ENV=development \
+    DEBUG=true \
+    WHISPER_MODEL=tiny \
+    LANGUAGE=pt \
+    PORT=5555 \
+    PYTHONUNBUFFERED=1 \
+    FLASK_DEBUG=1
+
+# Expor porta
+EXPOSE 5555
+
+# Volume para desenvolvimento (código será montado)
+VOLUME ["/app/src", "/app/logs", "/app/tests"]
+
+# Health check mais frequente para desenvolvimento
+HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:5555/health || exit 1
+
+# Comando de desenvolvimento com hot reload
+CMD ["python", "-m", "flask", "--app", "src.servidor_whisper", "run", "--host=0.0.0.0", "--port=5555", "--debug"] 

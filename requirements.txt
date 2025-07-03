@@ -1,0 +1,25 @@
+# ===================================
+# WHISPER SEM FFMPEG - REQUIREMENTS
+# ===================================
+
+# Core dependencies
+openai-whisper>=20230314
+flask>=2.3.0
+flask-cors>=4.0.0
+numpy>=1.24.0
+
+# Audio processing (alternatives to FFmpeg)
+librosa>=0.10.0
+soundfile>=0.12.0
+scipy>=1.10.0
+
+# Optional but recommended
+numba>=0.57.0
+llvmlite>=0.40.0
+
+# Additional audio format support
+audioread>=3.0.0
+resampy>=0.4.0
+
+# Development dependencies (optional)
+logging>=0.4.9.6
