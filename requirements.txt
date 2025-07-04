@@ -22,4 +22,4 @@ audioread>=3.0.0
 resampy>=0.4.0
 
 # Development dependencies (optional)
-logging>=0.4.9.6
+#logging>=0.4.9.6
